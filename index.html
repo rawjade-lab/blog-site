@@ -3,24 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Moonlight Blog</title>
+    <title>RawJadeLab</title>
     <style>
       :root {
         color-scheme: light;
-        --bg: #f6f4ff;
+        --bg: #fffaf4;
         --surface: #ffffff;
-        --text: #232136;
-        --muted: #6e6a86;
-        --accent: #7c5cff;
-        --accent-dark: #5f3ce8;
-        --border: #e6e0ff;
+        --text: #342d28;
+        --muted: #7b6f69;
+        --accent: #ff8e5e;
+        --accent-dark: #e06a2f;
+        --border: #f3e2d4;
+        --soft: #fff2e9;
       }
 
       * { box-sizing: border-box; }
       body {
         margin: 0;
         font-family: "Pretendard", "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, var(--bg), #eef7ff);
+        background: linear-gradient(135deg, var(--bg), #fff3e8);
         color: var(--text);
         line-height: 1.7;
       }
@@ -28,9 +29,10 @@
       a { color: inherit; text-decoration: none; }
 
       .hero {
-        background: linear-gradient(135deg, #5f3ce8 0%, #7c5cff 100%);
-        color: white;
-        padding: 28px 24px 80px;
+        background: linear-gradient(135deg, #ffe8d8 0%, #fffaf4 100%);
+        color: var(--text);
+        padding: 28px 24px 72px;
+        border-bottom: 1px solid var(--border);
       }
 
       .nav {
@@ -42,8 +44,8 @@
         gap: 16px;
       }
 
-      .brand { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.04em; }
-      .nav-links { display: flex; gap: 16px; color: rgba(255,255,255,0.9); font-size: 0.95rem; }
+      .brand { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.04em; color: var(--accent-dark); }
+      .nav-links { display: flex; gap: 16px; color: var(--muted); font-size: 0.95rem; }
 
       .hero-content {
         max-width: 1200px;
@@ -53,14 +55,15 @@
       }
 
       .hero-content h1 { font-size: clamp(2rem, 4vw, 3rem); margin: 0; }
-      .hero-content p { margin: 0; max-width: 700px; font-size: 1.05rem; color: rgba(255,255,255,0.88); }
+      .hero-content p { margin: 0; max-width: 720px; font-size: 1.05rem; color: var(--muted); }
 
       .btn {
         display: inline-block;
         margin-top: 8px;
         padding: 12px 18px;
-        background: white;
+        background: var(--soft);
         color: var(--accent-dark);
+        border: 1px solid var(--border);
         border-radius: 999px;
         font-weight: 700;
         width: fit-content;
@@ -79,7 +82,7 @@
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 20px;
-        box-shadow: 0 12px 30px rgba(35, 33, 54, 0.08);
+        box-shadow: 0 10px 24px rgba(52, 45, 40, 0.06);
       }
 
       .sidebar {
@@ -90,13 +93,13 @@
       .issue-list { display: grid; gap: 10px; }
       .issue-item {
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 12px;
-        background: #fcfbff;
+        background: #fffdfa;
         cursor: pointer;
         text-align: left;
       }
-      .issue-item.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+      .issue-item.active { border-color: var(--accent); background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
       .issue-item strong { display: block; margin-bottom: 6px; }
       .issue-item span { color: var(--muted); font-size: 0.9rem; }
 
@@ -160,7 +163,7 @@
   <body>
     <header class="hero">
       <nav class="nav">
-        <div class="brand">Moonlight Blog</div>
+        <div class="brand">RawJadeLab</div>
         <div class="nav-links">
           <a href="#posts">포스트</a>
           <a href="#about">소개</a>
@@ -168,9 +171,9 @@
         </div>
       </nav>
       <div class="hero-content">
-        <h1>GitHub 이슈로 채우는 블로그</h1>
-        <p>이슈 제목은 목록으로 보이고, 선택한 글의 본문은 상세 보기로 펼쳐집니다.</p>
-        <a class="btn" href="#posts">이슈 글 보기</a>
+        <h1>My AI Journey</h1>
+        <p>From Motion Designer to Product Builder</p>
+        <a class="btn" href="#posts">Read the posts</a>
       </div>
     </header>
 
@@ -188,14 +191,14 @@
       </section>
     </main>
 
-    <footer>© 2026 Moonlight Blog. All rights reserved.</footer>
+    <footer>© 2026 RawJadeLab. All rights reserved.</footer>
 
     <script>
       const issueList = document.getElementById('issueList');
       const detailTitle = document.getElementById('detailTitle');
       const detailMeta = document.getElementById('detailMeta');
       const detailBody = document.getElementById('detailBody');
-      const REPO = 'rawjade-lab/build-blog';
+      const REPO = 'rawjade-lab/blog-site';
       let issues = [];
       let selectedNumber = null;
 
