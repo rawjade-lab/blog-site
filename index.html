@@ -6,21 +6,35 @@
   <title>RawJadeLab :: Diary Log</title>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    :root { --bg-paper: #fcfbf3; --text-main: #2f3d31; --accent-red: #d9534f; --bg-body: #e5e5e5; }
+    :root { --bg-paper: #fcfbf3; --text-main: #2f3d31; --accent-red: #d9534f; }
     * { box-sizing: border-box; }
 
-    /* 기본 커서 설정 */
+    /* 데스크탑 환경 커서 제어 */
+    @media (min-width: 769px) {
+        body { cursor: url('./image/icon/default.png') 16 16, auto; }
+        .slide-container { cursor: url('./image/icon/default.png') 16 16, auto; }
+        
+        /* 양 끝 가장자리 50px에만 화살표 커서 적용 */
+        .memo-page:hover:before { 
+            content: ""; position: absolute; left: 0; top: 0; width: 50px; height: 100%; 
+            cursor: url('./image/icon/left.png') 16 16, w-resize; z-index: 10; 
+        }
+        .memo-page:hover:after { 
+            content: ""; position: absolute; right: 0; top: 0; width: 50px; height: 100%; 
+            cursor: url('./image/icon/right.png') 16 16, e-resize; z-index: 10; 
+        }
+    }
+
     body { 
-        margin: 0; font-family: "Pretendard", sans-serif; background: var(--bg-body); 
+        margin: 0; font-family: "Pretendard", sans-serif; 
+        background: url('./image/background.jpg') no-repeat center center fixed; 
+        background-size: cover;
         min-height: 100dvh; display: flex; overflow: hidden; 
-        cursor: url('./image/icon/default.png') 16 16, auto; 
     }
 
     .slide-container { 
         flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; 
         padding: 40px 100px; align-items: center; 
-        /* 컨테이너 자체는 기본 커서 유지 */
-        cursor: url('./image/icon/default.png') 16 16, auto;
     }
 
     .memo-page { 
@@ -29,56 +43,49 @@
         display: flex; flex-direction: column; position: relative;
     }
 
-    /* 메모지 내부에서만 화살표 커서가 적용되도록 수정 */
-    .memo-page:hover { cursor: url('./image/icon/default.png') 16 16, auto; }
-    
-    /* 가상 요소를 이용해 메모지 내부 영역에서만 화살표 활성화 */
-    .memo-page:hover:before { 
-        content: ""; position: absolute; left: 0; top: 0; width: 50%; height: 100%; 
-        cursor: url('./image/icon/left.png') 16 16, w-resize; 
-        z-index: 1; 
+    /* 게시글 내부 스크롤 허용 */
+    .post-content { 
+        flex: 1; overflow-y: auto; min-height: 0; padding-right: 10px; z-index: 5;
     }
-    .memo-page:hover:after { 
-        content: ""; position: absolute; right: 0; top: 0; width: 50%; height: 100%; 
-        cursor: url('./image/icon/right.png') 16 16, e-resize; 
-        z-index: 1; 
+
+    .memo-page h2 {
+        position: relative; margin: 0 0 30px 0; font-size: 1.4rem; color: #333;
+        background: #fff4a3; padding: 15px 20px; border-radius: 2px 10px 2px 10px;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transform: rotate(-1.5deg);
+        flex-shrink: 0; z-index: 5;
     }
 
     @media (max-width: 768px) {
       body { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
-      .fixed-profile { width: 100%; height: auto; padding: 20px; }
+      .fixed-profile { width: 100%; height: auto; padding: 20px; background: none; }
       .slide-container { padding: 20px; height: auto; }
-      .memo-page { flex: 0 0 90vw; height: 500px; margin-right: 10px; cursor: auto; }
-      .memo-page:hover:before, .memo-page:hover:after { display: none; }
+      .memo-page { flex: 0 0 90vw; height: 500px; margin-right: 10px; }
     }
 
     .fixed-profile { width: 400px; flex-shrink: 0; padding: 40px; }
-    #profileImg { width: 300px; height: 300px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    #profileImg { 
+        width: 150px; height: 150px; border-radius: 50%; 
+        object-fit: cover; border: none; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); 
+        margin-bottom: 20px; 
+    }
     #profileName { margin: 0; font-size: 1.8rem; color: var(--text-main); }
     #profileBio { font-size: 0.95rem; line-height: 1.6; color: #444; margin-top: 10px; }
-
-    .memo-page h2 { margin: 0 0 15px 0; font-size: 1.5rem; color: var(--text-main); border-bottom: 2px solid var(--accent-red); padding-bottom: 8px; flex-shrink: 0; }
-    .post-content { flex: 1; overflow-y: auto; }
     .post-content::-webkit-scrollbar { width: 4px; }
     .post-content::-webkit-scrollbar-thumb { background: #ccc; }
   </style>
 </head>
 <body>
-
   <div class="fixed-profile">
     <img id="profileImg" src="" alt="Profile">
     <h1 id="profileName">Loading...</h1>
     <p id="profileBio"></p>
   </div>
-
   <div class="slide-container" id="slideContainer" onclick="handleContainerClick(event)"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     const USER = 'rawjade-lab'; 
     const REPO = 'rawjade-lab/codespaces-blank'; 
     const container = document.getElementById('slideContainer');
-
     async function loadProfile() {
       const res = await fetch(`https://api.github.com/users/${USER}`);
       const data = await res.json();
@@ -86,7 +93,6 @@
       document.getElementById('profileName').innerText = data.name || data.login;
       document.getElementById('profileBio').innerHTML = 'Motion Designer and Builder.<br>Exploring the space beyond design.';
     }
-
     async function loadIssues() {
       const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&sort=created&direction=desc`);
       const issues = await res.json();
@@ -98,14 +104,12 @@
         container.appendChild(page);
       }
     }
-
     function handleContainerClick(e) {
       if (window.innerWidth > 768) {
         const mid = window.innerWidth / 2;
         container.scrollBy({ left: (e.clientX < mid ? -500 : 500), behavior: 'smooth' });
       }
     }
-
     loadProfile();
     loadIssues();
   </script>
