@@ -1,115 +1,104 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RawJadeLab :: Diary Log</title>
-    <style>
-      @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-      :root {
-        --bg-paper: #fcfbf3;
-        --grid-line: #ecece0;
-        --text-main: #2f3d31;
-        --accent-red: #d9534f;
-        --shadow: 0 10px 30px rgba(0,0,0,0.1);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: "Pretendard", sans-serif;
-        background: #e5e5e5;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .diary-spread {
-        background: var(--bg-paper);
-        width: 1000px; height: 700px;
-        border-radius: 4px;
-        box-shadow: var(--shadow);
-        display: grid; grid-template-columns: 1fr 1fr;
-        position: relative;
-        background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-        background-size: 25px 25px;
-      }
-      .diary-spread::before {
-        content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
-        background: rgba(0,0,0,0.05); z-index: 2;
-      }
-      .page { padding: 60px; display: flex; flex-direction: column; position: relative; }
-      
-      /* 네비게이션 스타일 */
-      .nav-header { border-bottom: 2px solid var(--accent-red); padding-bottom: 10px; margin-bottom: 20px; }
-      .nav-title { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin: 0; }
-      .nav-date { color: var(--accent-red); font-size: 0.9rem; margin-top: 5px; }
-      .nav-controls { margin-top: auto; display: flex; gap: 10px; }
-      .nav-btn { background: none; border: 1px solid #aaa; padding: 8px 20px; cursor: pointer; border-radius: 20px; }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RawJadeLab :: Diary Log</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    :root { --bg-paper: #fcfbf3; --text-main: #2f3d31; --accent-red: #d9534f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Pretendard", sans-serif; background: #e5e5e5; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; }
 
-      /* 본문 뷰어 (좌우 스크롤) */
-      .viewer-wrapper { width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; }
-      .post-flex-content { display: flex; height: 100%; }
-      .post-block { 
-        flex: 0 0 100%; scroll-snap-align: start; padding-right: 20px;
-        font-size: 1.1rem; line-height: 1.8; color: #444;
-      }
-      
-      /* 이미지 및 글자 디자인 */
-      .post-block img { max-width: 100%; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: rotate(-1deg); }
-      .post-block h2 { color: var(--accent-red); font-size: 1.4rem; }
-    </style>
-  </head>
-  <body>
-    <div class="diary-spread">
-      <aside class="page">
-        <div class="nav-header">
-          <h1 class="nav-title" id="detailTitle">로딩 중...</h1>
-          <div class="nav-date" id="detailDate"></div>
-        </div>
-        <div style="font-style: italic; opacity: 0.7;">RawJade's Diary Log</div>
-        <div class="nav-controls">
-          <button class="nav-btn" id="prevBtn">← 이전</button>
-          <button class="nav-btn" id="nextBtn">다음 →</button>
-        </div>
-      </aside>
-      <section class="page">
-        <div class="viewer-wrapper">
-          <div class="post-flex-content" id="detailBody"></div>
-        </div>
-      </section>
-    </div>
+    .slide-container { flex: 1; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; gap: 0; padding: 0 100px; align-items: center; scroll-padding: 0 100px; }
+    .memo-page { flex: 0 0 500px; width: 500px; height: 720px; background: var(--bg-paper); scroll-snap-align: center; padding: 40px; position: relative; background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px); background-size: 20px 20px; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid #dcdcdc; }
+    
+    .memo-page h2 { margin: 0 0 15px 0; font-size: 1.5rem; color: var(--text-main); border-bottom: 2px solid var(--accent-red); padding-bottom: 8px; }
+    .post-content { display: flex; flex-direction: column; gap: 12px; flex: 1; width: 100%; overflow: hidden; }
+    .post-content img { width: 100%; height: auto; border: 4px solid white; box-shadow: 4px 4px 8px rgba(0,0,0,0.08); transform: rotate(-1deg); }
+    .post-content p { margin: 0; font-size: 1rem; line-height: 1.5; color: #444; }
+    .profile-box { text-align: center; padding-top: 50px; }
+  </style>
+</head>
+<body>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-      const REPO = 'rawjade-lab/blog-site';
-      let issues = [];
-      let currentIndex = 0;
+  <div class="slide-container" id="slideContainer" onclick="handleContainerClick(event)"></div>
 
-      function render() {
-        const issue = issues[currentIndex];
-        document.getElementById('detailTitle').textContent = issue?.title || '글 없음';
-        document.getElementById('detailDate').textContent = issue?.created_at ? new Date(issue.created_at).toLocaleDateString() : '';
-        const bodyHtml = issue?.bodyHtml || marked.parse(issue?.body || '');
-        document.getElementById('detailBody').innerHTML = `<div class="post-block">${bodyHtml}</div>`;
-      }
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const REPO = 'rawjade-lab/codespaces-blank'; // 본인의 GitHub ID/레포지토리명으로 변경하세요
+    const container = document.getElementById('slideContainer');
 
-      async function loadIssues() {
-        try {
-          const res = await fetch('./posts.json').catch(() => null);
-          if (res && res.ok) {
-            const data = await res.json();
-            issues = data.posts || [];
-          } else {
-            const apiRes = await fetch(`https://api.github.com/repos/${REPO}/issues?state=all`);
-            issues = (await apiRes.json()).filter(i => !i.pull_request);
+    function createProfilePage() {
+      const page = document.createElement('div');
+      page.className = 'memo-page';
+      page.innerHTML = `
+        <div class="post-content">
+          <div class="profile-box">
+            <h1>RawJadeLab</h1>
+            <p>모션 디자이너이자 빌더.<br>디자인 그 이상을 고민합니다.</p>
+            <br><hr><br>
+            <p>데이터: GitHub Issues 실시간 반영</p>
+          </div>
+        </div>`;
+      container.appendChild(page);
+    }
+
+    async function loadIssues() {
+      container.innerHTML = '';
+      createProfilePage();
+
+      try {
+        // GitHub API를 직접 호출하여 이슈 목록을 가져옴
+        const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&sort=created&direction=desc`);
+        const issues = await res.json();
+
+        for (const issue of issues) {
+          // Pull Request는 제외
+          if (issue.pull_request) continue;
+
+          const sourceHtml = marked.parse(issue.body);
+          const sourceDiv = document.createElement('div');
+          sourceDiv.innerHTML = sourceHtml;
+          const elements = Array.from(sourceDiv.children);
+
+          let currentPage = null;
+          let contentArea = null;
+
+          for (const el of elements) {
+            if (!currentPage) {
+              currentPage = createPage(issue.title, true);
+              container.appendChild(currentPage);
+              contentArea = currentPage.querySelector('.post-content');
+            }
+            contentArea.appendChild(el);
+            if (contentArea.scrollHeight > 600) {
+              contentArea.removeChild(el);
+              currentPage = createPage('', false);
+              container.appendChild(currentPage);
+              contentArea = currentPage.querySelector('.post-content');
+              contentArea.appendChild(el);
+            }
           }
-          render();
-        } catch (e) { document.getElementById('detailTitle').textContent = "불러오기 실패"; }
+        }
+      } catch (e) {
+        console.error("이슈를 불러오는데 실패했습니다:", e);
       }
+    }
 
-      document.getElementById('prevBtn').onclick = () => { if(currentIndex > 0) { currentIndex--; render(); } };
-      document.getElementById('nextBtn').onclick = () => { if(currentIndex < issues.length - 1) { currentIndex++; render(); } };
-      loadIssues();
-    </script>
-  </body>
+    function createPage(title, isFirst) {
+      const page = document.createElement('div');
+      page.className = 'memo-page';
+      page.innerHTML = isFirst ? `<h2>${title}</h2><div class="post-content"></div>` : `<div class="post-content"></div>`;
+      return page;
+    }
+
+    function handleContainerClick(e) {
+      const mid = window.innerWidth / 2;
+      container.scrollBy({ left: (e.clientX < mid ? -500 : 500), behavior: 'smooth' });
+    }
+
+    loadIssues();
+  </script>
+</body>
 </html>
