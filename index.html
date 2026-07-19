@@ -8,25 +8,55 @@
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     :root { --bg-paper: #fcfbf3; --text-main: #2f3d31; --accent-red: #d9534f; --bg-body: #e5e5e5; }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: "Pretendard", sans-serif; background: var(--bg-body); min-height: 100dvh; display: flex; overflow: hidden; }
+
+    /* 기본 커서 설정 */
+    body { 
+        margin: 0; font-family: "Pretendard", sans-serif; background: var(--bg-body); 
+        min-height: 100dvh; display: flex; overflow: hidden; 
+        cursor: url('./image/icon/default.png') 16 16, auto; 
+    }
+
+    .slide-container { 
+        flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; 
+        padding: 40px 100px; align-items: center; 
+        /* 컨테이너 자체는 기본 커서 유지 */
+        cursor: url('./image/icon/default.png') 16 16, auto;
+    }
+
+    .memo-page { 
+        flex: 0 0 500px; width: 500px; height: 720px; background: var(--bg-paper); 
+        scroll-snap-align: start; padding: 40px; border-right: 1px solid #dcdcdc; 
+        display: flex; flex-direction: column; position: relative;
+    }
+
+    /* 메모지 내부에서만 화살표 커서가 적용되도록 수정 */
+    .memo-page:hover { cursor: url('./image/icon/default.png') 16 16, auto; }
+    
+    /* 가상 요소를 이용해 메모지 내부 영역에서만 화살표 활성화 */
+    .memo-page:hover:before { 
+        content: ""; position: absolute; left: 0; top: 0; width: 50%; height: 100%; 
+        cursor: url('./image/icon/left.png') 16 16, w-resize; 
+        z-index: 1; 
+    }
+    .memo-page:hover:after { 
+        content: ""; position: absolute; right: 0; top: 0; width: 50%; height: 100%; 
+        cursor: url('./image/icon/right.png') 16 16, e-resize; 
+        z-index: 1; 
+    }
 
     @media (max-width: 768px) {
       body { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
       .fixed-profile { width: 100%; height: auto; padding: 20px; }
       .slide-container { padding: 20px; height: auto; }
-      .memo-page { flex: 0 0 90vw; height: 500px; margin-right: 10px; }
+      .memo-page { flex: 0 0 90vw; height: 500px; margin-right: 10px; cursor: auto; }
+      .memo-page:hover:before, .memo-page:hover:after { display: none; }
     }
 
-    /* 소개 영역 */
     .fixed-profile { width: 400px; flex-shrink: 0; padding: 40px; }
     #profileImg { width: 300px; height: 300px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
     #profileName { margin: 0; font-size: 1.8rem; color: var(--text-main); }
     #profileBio { font-size: 0.95rem; line-height: 1.6; color: #444; margin-top: 10px; }
 
-    /* 슬라이드 영역 */
-    .slide-container { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 40px 100px; align-items: center; cursor: pointer; }
-    
-    .memo-page { flex: 0 0 500px; width: 500px; height: 720px; background: var(--bg-paper); scroll-snap-align: start; padding: 40px; border-right: 1px solid #dcdcdc; display: flex; flex-direction: column; }
     .memo-page h2 { margin: 0 0 15px 0; font-size: 1.5rem; color: var(--text-main); border-bottom: 2px solid var(--accent-red); padding-bottom: 8px; flex-shrink: 0; }
     .post-content { flex: 1; overflow-y: auto; }
     .post-content::-webkit-scrollbar { width: 4px; }
@@ -54,8 +84,7 @@
       const data = await res.json();
       document.getElementById('profileImg').src = data.avatar_url;
       document.getElementById('profileName').innerText = data.name || data.login;
-      // 1번 문구 적용
-      document.getElementById('profileBio').innerText = 'Motion Designer and Builder. Exploring the space beyond design.';
+      document.getElementById('profileBio').innerHTML = 'Motion Designer and Builder.<br>Exploring the space beyond design.';
     }
 
     async function loadIssues() {
