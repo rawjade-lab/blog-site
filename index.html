@@ -6,91 +6,54 @@
   <title>RawJadeLab :: Diary Log</title>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    :root { --bg-paper: #fcfbf3; --text-main: #2f3d31; --accent-red: #d9534f; }
+    :root { --bg-paper: #fcfbf3; --text-main: #2f3d31; --accent-red: #d9534f; --bg-body: #e5e5e5; }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: "Pretendard", sans-serif; background: #e5e5e5; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; }
+    body { margin: 0; font-family: "Pretendard", sans-serif; background: var(--bg-body); min-height: 100dvh; display: flex; overflow: hidden; }
 
-    .slide-container { flex: 1; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; gap: 0; padding: 0 100px; align-items: center; scroll-padding: 0 100px; }
-    .memo-page { flex: 0 0 500px; width: 500px; height: 720px; background: var(--bg-paper); scroll-snap-align: center; padding: 40px; position: relative; background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px); background-size: 20px 20px; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid #dcdcdc; }
+    /* 소개 영역: 왼쪽 벽에 고정 */
+    .fixed-profile { width: 200px; flex-shrink: 0; padding: 40px; }
+    .fixed-profile img { width: 300px; height: auto; border: 4px solid white; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .fixed-profile h1 { margin: 0; font-size: 1.8rem; color: var(--text-main); }
+    .fixed-profile p { font-size: 0.9rem; line-height: 1.5; color: #444; }
+
+    /* 슬라이드 영역: flex-1을 사용하여 남은 공간을 모두 차지함 */
+    .slide-container { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 40px 100px; align-items: center; cursor: pointer; }
     
-    .memo-page h2 { margin: 0 0 15px 0; font-size: 1.5rem; color: var(--text-main); border-bottom: 2px solid var(--accent-red); padding-bottom: 8px; }
-    .post-content { display: flex; flex-direction: column; gap: 12px; flex: 1; width: 100%; overflow: hidden; }
-    .post-content img { width: 100%; height: auto; border: 4px solid white; box-shadow: 4px 4px 8px rgba(0,0,0,0.08); transform: rotate(-1deg); }
-    .post-content p { margin: 0; font-size: 1rem; line-height: 1.5; color: #444; }
-    .profile-box { text-align: center; padding-top: 50px; }
+    /* 메모지 영역: 간격 없이 이어짐 */
+    .memo-page { flex: 0 0 500px; width: 500px; height: 720px; background: var(--bg-paper); scroll-snap-align: start; padding: 40px; border-right: 1px solid #dcdcdc; display: flex; flex-direction: column; }
+    
+    .memo-page h2 { margin: 0 0 15px 0; font-size: 1.5rem; color: var(--text-main); border-bottom: 2px solid var(--accent-red); padding-bottom: 8px; flex-shrink: 0; }
+    .post-content { flex: 1; overflow-y: auto; }
+    .post-content::-webkit-scrollbar { width: 4px; }
+    .post-content::-webkit-scrollbar-thumb { background: #ccc; }
   </style>
 </head>
 <body>
+
+  <div class="fixed-profile">
+    <img src="https://via.placeholder.com/300x200" alt="Profile">
+    <h1>RawJadeLab</h1>
+    <p>모션 디자이너이자 빌더.<br>디자인 그 이상을 고민합니다.<br><br>📧 email@example.com<br>🔗 rawjadelab.com</p>
+  </div>
 
   <div class="slide-container" id="slideContainer" onclick="handleContainerClick(event)"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    const REPO = 'rawjade-lab/codespaces-blank'; // 본인의 GitHub ID/레포지토리명으로 변경하세요
+    const REPO = 'rawjade-lab/codespaces-blank'; 
     const container = document.getElementById('slideContainer');
 
-    function createProfilePage() {
-      const page = document.createElement('div');
-      page.className = 'memo-page';
-      page.innerHTML = `
-        <div class="post-content">
-          <div class="profile-box">
-            <h1>RawJadeLab</h1>
-            <p>모션 디자이너이자 빌더.<br>디자인 그 이상을 고민합니다.</p>
-            <br><hr><br>
-            <p>데이터: GitHub Issues 실시간 반영</p>
-          </div>
-        </div>`;
-      container.appendChild(page);
-    }
-
     async function loadIssues() {
-      container.innerHTML = '';
-      createProfilePage();
+      const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&sort=created&direction=desc`);
+      const issues = await res.json();
 
-      try {
-        // GitHub API를 직접 호출하여 이슈 목록을 가져옴
-        const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&sort=created&direction=desc`);
-        const issues = await res.json();
-
-        for (const issue of issues) {
-          // Pull Request는 제외
-          if (issue.pull_request) continue;
-
-          const sourceHtml = marked.parse(issue.body);
-          const sourceDiv = document.createElement('div');
-          sourceDiv.innerHTML = sourceHtml;
-          const elements = Array.from(sourceDiv.children);
-
-          let currentPage = null;
-          let contentArea = null;
-
-          for (const el of elements) {
-            if (!currentPage) {
-              currentPage = createPage(issue.title, true);
-              container.appendChild(currentPage);
-              contentArea = currentPage.querySelector('.post-content');
-            }
-            contentArea.appendChild(el);
-            if (contentArea.scrollHeight > 600) {
-              contentArea.removeChild(el);
-              currentPage = createPage('', false);
-              container.appendChild(currentPage);
-              contentArea = currentPage.querySelector('.post-content');
-              contentArea.appendChild(el);
-            }
-          }
-        }
-      } catch (e) {
-        console.error("이슈를 불러오는데 실패했습니다:", e);
+      for (const issue of issues) {
+        if (issue.pull_request) continue;
+        const page = document.createElement('div');
+        page.className = 'memo-page';
+        page.innerHTML = `<h2>${issue.title}</h2><div class="post-content">${marked.parse(issue.body)}</div>`;
+        container.appendChild(page);
       }
-    }
-
-    function createPage(title, isFirst) {
-      const page = document.createElement('div');
-      page.className = 'memo-page';
-      page.innerHTML = isFirst ? `<h2>${title}</h2><div class="post-content"></div>` : `<div class="post-content"></div>`;
-      return page;
     }
 
     function handleContainerClick(e) {
