@@ -1,0 +1,25 @@
+{
+  "posts": [
+    {
+      "number": 1,
+      "title": "Why I'm Learning to Build Instead of Just Design",
+      "created_at": "2026-07-18T00:00:00Z",
+      "user": { "login": "rawjade-lab" },
+      "bodyHtml": "<h2>Every journey starts with a single decision.</h2><p><img src=\"https://github.com/user-attachments/assets/4bc9e91e-f274-4dc4-b955-2b6511d7c505\" alt=\"Journey illustration\" /></p><p>몇 년 동안 나는 모션 디자이너로 일했다. 에이전시에서 다양한 프로젝트를 경험했고, 프리랜서 작업도 해왔다. 영상을 만들고, 브랜드를 고민하고, 디자인으로 문제를 해결하는 일이 즐거웠다. 하지만 어느 날부터 한 가지 질문이 계속 머릿속을 떠나지 않았다.</p><p>'내가 디자인을 정말 잘하게 된다면, 그 다음에는 무엇이 달라질까?'</p><p>더 좋은 프로젝트를 맡을 수도 있다. 더 높은 단가를 받을 수도 있다. 더 유명한 클라이언트와 일할 수도 있다. 하지만 결국 하나는 변하지 않았다. 내 수입은 내가 일한 시간에 비례한다는 것. 그 사실은 생각보다 오래 마음에 남았다.</p><p><img src=\"https://github.com/user-attachments/assets/4bc9e91e-f274-4dc4-b955-2b6511d7c505\" alt=\"Reflection image\" /></p><p>그 이후 자연스럽게 해외 시장을 보기 시작했다. 영어권 SaaS와 스타트업을 찾아보면서 한 가지 공통점을 발견했다. 눈에 띄는 사람들은 단순히 디자인을 잘하는 사람이 아니었다. 그들은 제품을 이해했고, 사용자를 이해했고, 필요하다면 직접 프로토타입을 만들고 검증했다. 그들은 디자이너라기보다 빌더(Builder, 직접 만들고 검증하는 사람)에 가까웠다.</p><p><img src=\"https://github.com/user-attachments/assets/4bc9e91e-f274-4dc4-b955-2b6511d7c505\" alt=\"Builder image\" /></p><p>이 블로그는 성공담만 기록하는 공간이 아니다. 오히려 처음 배우는 과정과, 실패했던 시도, 잘못된 선택, 그리고 그 안에서 배운 것들을 더 많이 기록하게 될 것 같다.</p>"
+    },
+    {
+      "number": 2,
+      "title": "Test content!",
+      "created_at": "2026-07-17T00:00:00Z",
+      "user": { "login": "rawjade-lab" },
+      "bodyHtml": "<h2>Hello</h2><p>This is sample text.</p><p>I test the blog make on github.</p><p>Thank you:-)!</p><p><img src=\"https://github.com/user-attachments/assets/6a2ab07c-8767-4139-9642-e3e0116ac763\" alt=\"Sample image\" /></p>"
+    },
+    {
+      "number": 3,
+      "title": "Blog test texts:)♥",
+      "created_at": "2026-07-16T00:00:00Z",
+      "user": { "login": "rawjade-lab" },
+      "bodyHtml": "<p>♥♥♥♥♥</p><p>I made this!!!</p>"
+    }
+  ]
+}
