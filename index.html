@@ -14,22 +14,9 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(47, 61, 49, 0.2); border-radius: 10px; }
 
-    body { 
-        margin: 0; font-family: 'Poor Story', sans-serif; 
-        background: url('./image/background.jpg') no-repeat center center fixed; 
-        background-size: cover;
-        min-height: 100dvh; display: flex; overflow: hidden; 
-    }
+    body { margin: 0; font-family: 'Poor Story', sans-serif; background: url('./image/background.jpg') no-repeat center center fixed; background-size: cover; min-height: 100dvh; display: flex; overflow: hidden; }
 
-    @media (max-width: 768px) {
-        body { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
-        .fixed-profile { width: 100% !important; padding: 20px !important; text-align: center; }
-        .slide-container { padding: 20px !important; flex-direction: column; overflow-x: hidden !important; align-items: center; }
-        .memo-page { flex: 0 0 auto !important; width: 90% !important; height: auto !important; min-height: 500px; margin-bottom: 20px; }
-        .memo-first, .memo-last { border-radius: 20px !important; }
-        .post-nav { margin-top: 40px; } /* 목록 버튼 간격 */
-    }
-
+    /* 마우스 커서 기능 복구 */
     @media (min-width: 769px) {
         body { cursor: url('./image/icon/default.png') 16 16, auto; }
         .slide-container { cursor: url('./image/icon/default.png') 16 16, auto; }
@@ -37,81 +24,104 @@
         .memo-page:hover:after { content: ""; position: absolute; right: 0; top: 0; width: 50px; height: 100%; cursor: url('./image/icon/right.png') 16 16, e-resize; z-index: 10; }
     }
 
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        body { flex-direction: column; overflow-y: auto; }
+        .fixed-profile { width: 100% !important; padding: 20px !important; text-align: center; }
+        .slide-container { padding: 20px !important; flex-direction: column; overflow-x: hidden !important; align-items: center; }
+        .memo-page { flex: 0 0 450px !important; width: 95% !important; height: 500px !important; margin-bottom: 20px; border-radius: 20px !important; }
+        .accordion { width: 100% !important; }
+    }
+
     .slide-container { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 40px 100px; align-items: center; }
     .memo-page { flex: 0 0 500px; width: 500px; height: 720px; scroll-snap-align: start; padding: 40px; display: flex; flex-direction: column; position: relative; background-color: var(--bg-paper); box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
-    .memo-first { border-top-left-radius: 20px; border-bottom-left-radius: 20px; }
-    .memo-last { border-top-right-radius: 20px; border-bottom-right-radius: 20px; }
+    .memo-page:first-child { border-top-left-radius: 20px; border-bottom-left-radius: 20px; }
+    .memo-page:last-child { border-top-right-radius: 20px; border-bottom-right-radius: 20px; }
     
-    .type-grid { background-image: radial-gradient(#dcdcdc 1px, transparent 1px); background-size: 20px 20px; }
-    .type-lined { background-image: linear-gradient(#dcdcdc 1px, transparent 1px); background-size: 100% 30px; }
+    .post-content { flex: 1; overflow-y: auto; font-family: 'Darker Grotesque', sans-serif; font-size: 1.2rem; line-height: 1.1; white-space: pre-wrap; }
+    .post-content h1 { font-size: 1.2rem !important; margin: 10px 0; color: #444; }
+    .post-content h2 { background: #FFFFDD; padding: 4px 8px; display: inline-block; border-radius: 2px; font-size: 1.1rem; margin: 10px 0; box-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    .post-content img { max-width: 100% !important; height: auto !important; display: block; border-radius: 0; }
+    
+    .main-title { position: relative; margin: 0 0 15px 0; font-size: 1.4rem; color: #333; background: #D9FFDA; padding: 10px 15px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); display: inline-block; max-width: 80%; border-radius: 4px; }
 
-    .post-content { flex: 1; overflow-y: auto; z-index: 5; font-family: 'Darker Grotesque', 'Poor Story', sans-serif; font-size: 1.38rem; line-height: 1.6; white-space: pre-wrap; }
-    .post-date { font-size: 1rem; color: #777; float: right; font-family: 'Darker Grotesque', 'Poor Story', sans-serif; margin-top: 5px; }
-
-    .memo-page h2 { position: relative; margin: 0 0 20px 0; font-size: 1.8rem; color: #333; background: #D9FFDA; padding: 15px 20px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); display: inline-block; max-width: 70%; transition: border-radius 0.3s; }
+    .post-nav { margin-top: 40px; }
+    .accordion { margin-bottom: 10px; width: 80%; }
+    .accordion-header { background: rgba(255, 255, 255, 0.1); color: #fff; padding: 8px 15px; width: 100%; border: none; cursor: pointer; font-family: 'Architects Daughter', cursive; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .accordion-content { padding: 5px 0 10px 10px; display: none; }
+    .post-nav a { display: block; color: #eee; text-decoration: none; padding: 2px 0; font-family: 'Darker Grotesque', sans-serif; }
 
     .fixed-profile { width: 400px; flex-shrink: 0; padding: 40px; color: #fff; }
     #profileImg { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
     #profileName { margin: 0; font-size: 2.2rem; font-family: 'Lobster', cursive; }
-    #profileBio { font-size: 1.2rem; margin-top: 10px; font-family: 'Architects Daughter', cursive; }
+    
+    /* 프로필 소개글 스타일 반영 (폰트 사이즈 축소 및 줄바꿈) */
+    .bio-container { font-size: 1.05rem; margin-top: 15px; font-family: 'Architects Daughter', cursive; line-height: 1.5; }
+    .bio-title { display: block; font-weight: bold; margin-bottom: 8px; }
+    .bio-desc { display: block; }
 
-    /* 목록 버튼 스타일 (간격 조정 및 폰트 변경) */
-    .post-nav { margin-top: 60px; } 
-    .post-nav a { display: block; color: #fff; text-decoration: none; padding: 6px 0; font-size: 1.1rem; opacity: 0.8; font-family: 'Darker Grotesque', sans-serif; }
-    .post-nav a:hover { opacity: 1; text-decoration: underline; }
+    .type-grid { background-image: radial-gradient(#dcdcdc 1px, transparent 1px); background-size: 20px 20px; }
+    .type-lined { background-image: linear-gradient(#dcdcdc 1px, transparent 1px); background-size: 100% 30px; }
   </style>
 </head>
 <body>
   <div class="fixed-profile">
     <img id="profileImg" src="" alt="Profile">
-    <h1 id="profileName">Loading...</h1>
-    <p id="profileBio"></p>
+    <h1 id="profileName">Jade Baek</h1>
+    <div class="bio-container">
+        <span class="bio-title">Full-stack Designer & Builder</span>
+        <span class="bio-desc">Crafting brand identities, UI/UX, and motion graphics.<br>I use vibe coding to bring my imagination to life.</span>
+    </div>
     <div class="post-nav" id="postNav"></div>
   </div>
   <div class="slide-container" id="slideContainer" onclick="handleContainerClick(event)"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    const USER = 'rawjade-lab', REPO = 'rawjade-lab/codespaces-blank';
+    const USER = 'rawjade-lab', REPO = 'rawjade-lab/blog-site';
     const container = document.getElementById('slideContainer'), nav = document.getElementById('postNav');
     const types = ['type-grid', 'type-lined', 'type-blank'];
+    let allIssues = [];
 
     async function loadData() {
       const userRes = await fetch(`https://api.github.com/users/${USER}`);
       const userData = await userRes.json();
       document.getElementById('profileImg').src = userData.avatar_url;
-      document.getElementById('profileName').innerText = userData.name || userData.login;
       
-      // 고정된 소개글 적용
-      document.getElementById('profileBio').innerHTML = 'Full-stack Designer & Builder<br>Crafting brand identities, UI/UX, and motion graphics.<br>I use vibe coding to bring my imagination to life.';
+      allIssues = await (await fetch(`https://api.github.com/repos/${REPO}/issues?state=open`)).json();
+      allIssues.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       
-      const issues = await (await fetch(`https://api.github.com/repos/${REPO}/issues?state=open`)).json();
-      
-      issues.forEach((issue, index) => {
-        if (issue.pull_request) return;
-        const link = document.createElement('a');
-        link.href = `#post-${index}`;
-        link.innerText = `> ${issue.title}`;
-        nav.appendChild(link);
+      renderNav();
+      renderPosts();
+    }
 
-        const page = document.createElement('div');
-        page.id = `post-${index}`;
-        page.className = `memo-page ${types[index % 3]} ${index===0?'memo-first':''} ${index===issues.length-1?'memo-last':''}`;
-        
-        const corners = ['20px 0 0 0', '0 20px 0 0', '0 0 20px 0', '0 0 0 20px'];
-        const randomCorner = corners[Math.floor(Math.random() * corners.length)];
-        const rotation = Math.floor(Math.random()*7)-3;
-
-        const date = new Date(issue.created_at).toLocaleDateString();
-        page.innerHTML = `
-            <div>
-                <h2 style="transform: rotate(${rotation}deg); border-radius: ${randomCorner};">${issue.title}</h2>
-                <div class="post-date">${date}</div>
-            </div>
-            <div class="post-content">${marked.parse(issue.body)}</div>
-        `;
-        container.appendChild(page);
+    function renderNav() {
+      const categories = { 'Journey': [], 'Business': [], 'Authority': [] };
+      const unclassified = [];
+      allIssues.forEach((issue, idx) => {
+        const label = issue.labels.length > 0 ? issue.labels[0].name : null;
+        if (label && categories[label]) categories[label].push({ title: issue.title, idx: idx });
+        else unclassified.push({ title: issue.title, idx: idx });
       });
+      for (const cat in categories) {
+        if (categories[cat].length === 0) continue;
+        nav.innerHTML += `<div class="accordion"><button class="accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">${cat}</button><div class="accordion-content">${categories[cat].map(item => `<a href="#" onclick="renderPosts(${item.idx})">> ${item.title}</a>`).join('')}</div></div>`;
+      }
+      if (unclassified.length > 0) nav.innerHTML += `<div class="accordion-content" style="display:block">${unclassified.map(item => `<a href="#" onclick="renderPosts(${item.idx})">> ${item.title}</a>`).join('')}</div>`;
+    }
+
+    function renderPosts(startIdx = 0) {
+      container.innerHTML = '';
+      for (let i = 0; i < allIssues.length; i++) {
+        const issue = allIssues[(startIdx + i) % allIssues.length];
+        const page = document.createElement('div');
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        const rotation = Math.floor(Math.random()*7)-3;
+        
+        page.className = `memo-page ${randomType}`;
+        page.innerHTML = `<div><h2 class="main-title" style="transform: rotate(${rotation}deg);">${issue.title}</h2></div><div class="post-content">${marked.parse(issue.body)}</div>`;
+        container.appendChild(page);
+      }
     }
 
     function handleContainerClick(e) {
