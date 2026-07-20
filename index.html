@@ -16,7 +16,7 @@
 
     body { margin: 0; font-family: 'Poor Story', sans-serif; background: url('./image/background.jpg') no-repeat center center fixed; background-size: cover; min-height: 100dvh; display: flex; overflow: hidden; }
 
-    /* 마우스 커서 기능 복구 */
+    /* 마우스 커서 기능 */
     @media (min-width: 769px) {
         body { cursor: url('./image/icon/default.png') 16 16, auto; }
         .slide-container { cursor: url('./image/icon/default.png') 16 16, auto; }
@@ -55,7 +55,6 @@
     #profileImg { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
     #profileName { margin: 0; font-size: 2.2rem; font-family: 'Lobster', cursive; }
     
-    /* 프로필 소개글 스타일 반영 (폰트 사이즈 축소 및 줄바꿈) */
     .bio-container { font-size: 1.05rem; margin-top: 15px; font-family: 'Architects Daughter', cursive; line-height: 1.5; }
     .bio-title { display: block; font-weight: bold; margin-bottom: 8px; }
     .bio-desc { display: block; }
@@ -96,15 +95,20 @@
     }
 
     function renderNav() {
-      const categories = { 'Journey': [], 'Business': [], 'Authority': [] };
+      const categories = {};
       const unclassified = [];
       allIssues.forEach((issue, idx) => {
         const label = issue.labels.length > 0 ? issue.labels[0].name : null;
-        if (label && categories[label]) categories[label].push({ title: issue.title, idx: idx });
-        else unclassified.push({ title: issue.title, idx: idx });
+        if (label) {
+          if (!categories[label]) categories[label] = [];
+          categories[label].push({ title: issue.title, idx: idx });
+        } else {
+          unclassified.push({ title: issue.title, idx: idx });
+        }
       });
+      
+      nav.innerHTML = '';
       for (const cat in categories) {
-        if (categories[cat].length === 0) continue;
         nav.innerHTML += `<div class="accordion"><button class="accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">${cat}</button><div class="accordion-content">${categories[cat].map(item => `<a href="#" onclick="renderPosts(${item.idx})">> ${item.title}</a>`).join('')}</div></div>`;
       }
       if (unclassified.length > 0) nav.innerHTML += `<div class="accordion-content" style="display:block">${unclassified.map(item => `<a href="#" onclick="renderPosts(${item.idx})">> ${item.title}</a>`).join('')}</div>`;
