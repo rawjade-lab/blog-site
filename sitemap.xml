@@ -1,8 +1,272 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://rawjade-lab.github.io/blog-site/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RawJadeLab</title>
+  
+  <!-- SEO & Open Graph Dynamic Meta Tags -->
+  <meta name="description" id="metaDescription" content="A designer's journey into vibe coding and full-stack building." />
+  <link rel="canonical" id="canonicalUrl" href="" />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="blog" />
+  <meta property="og:title" id="ogTitle" content="RawJadeLab" />
+  <meta property="og:description" id="ogDescription" content="A designer's journey into vibe coding and full-stack building." />
+  <meta property="og:image" id="ogImage" content="" />
+  <meta property="og:url" id="ogUrl" content="" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" id="twitterTitle" content="RawJadeLab" />
+  <meta name="twitter:description" id="twitterDescription" content="A designer's journey into vibe coding and full-stack building." />
+  <meta name="twitter:image" id="twitterImage" content="" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" id="jsonLdSchema">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "RawJadeLab :: Diary Log",
+      "description": "A designer's journey into vibe coding.",
+      "author": {
+        "@type": "Person",
+        "name": "Jade Baek"
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Architects+Daughter&family=Paytone+One&family=Racing+Sans+One&family=Darker+Grotesque:wght@400;700&family=Poor+Story&display=swap');
+
+    :root { --bg-paper: #FFFFFB; --text-main: #2f3d31; }
+    * { box-sizing: border-box; }
+
+    ::-webkit-scrollbar { height: 8px; width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(47, 61, 49, 0.2); border-radius: 10px; }
+
+    body { margin: 0; font-family: 'Poor Story', sans-serif; background: url('./image/background.jpg') no-repeat center center fixed; background-size: cover; min-height: 100dvh; display: flex; overflow: hidden; }
+
+    /* 마우스 커서 기능 */
+    @media (min-width: 769px) {
+        body { cursor: url('./image/icon/default.png') 16 16, auto; }
+        .slide-container { cursor: url('./image/icon/default.png') 16 16, auto; }
+        .memo-page:hover:before { content: ""; position: absolute; left: 0; top: 0; width: 50px; height: 100%; cursor: url('./image/icon/left.png') 16 16, w-resize; z-index: 10; }
+        .memo-page:hover:after { content: ""; position: absolute; right: 0; top: 0; width: 50px; height: 100%; cursor: url('./image/icon/right.png') 16 16, e-resize; z-index: 10; }
+    }
+
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        body { flex-direction: column; overflow-y: auto; }
+        .fixed-profile { width: 100% !important; padding: 20px !important; text-align: center; }
+        .slide-container { padding: 20px !important; flex-direction: column; overflow-x: hidden !important; align-items: center; }
+        .memo-page { flex: 0 0 450px !important; width: 95% !important; height: 500px !important; margin-bottom: 20px; border-radius: 20px !important; }
+        .accordion { width: 100% !important; }
+    }
+
+    .slide-container { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 40px 100px; align-items: center; }
+    .memo-page { flex: 0 0 500px; width: 500px; height: 720px; scroll-snap-align: start; padding: 40px; display: flex; flex-direction: column; position: relative; background-color: var(--bg-paper); box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
+    .memo-page:first-child { border-top-left-radius: 20px; border-bottom-left-radius: 20px; }
+    .memo-page:last-child { border-top-right-radius: 20px; border-bottom-right-radius: 20px; }
+    
+    .post-content { flex: 1; overflow-y: auto; font-family: 'Darker Grotesque', sans-serif; font-size: 1.2rem; line-height: 1.1; white-space: pre-wrap; }
+    .post-content h1 { font-size: 1.2rem !important; margin: 10px 0; color: #444; }
+    .post-content h2 { background: #FFFFDD; padding: 4px 8px; display: inline-block; border-radius: 2px; font-size: 1.1rem; margin: 10px 0; box-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    .post-content img { max-width: 100% !important; height: auto !important; display: block; border-radius: 0; }
+    
+    .main-title { position: relative; margin: 0 0 15px 0; font-size: 1.4rem; color: #333; background: #D9FFDA; padding: 10px 15px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); display: inline-block; max-width: 80%; border-radius: 4px; }
+
+    .post-nav { margin-top: 40px; }
+    .accordion { margin-bottom: 10px; width: 80%; }
+    .accordion-header { background: rgba(255, 255, 255, 0.1); color: #fff; padding: 8px 15px; width: 100%; border: none; cursor: pointer; font-family: 'Architects Daughter', cursive; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .accordion-content { padding: 5px 0 10px 10px; display: none; }
+    .post-nav a { display: block; color: #eee; text-decoration: none; padding: 2px 0; font-family: 'Darker Grotesque', sans-serif; }
+
+    .fixed-profile { width: 400px; flex-shrink: 0; padding: 40px; color: #fff; }
+    #profileImg { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    #profileName { margin: 0; font-size: 2.2rem; font-family: 'Lobster', cursive; }
+    
+    .bio-container { font-size: 1.05rem; margin-top: 15px; font-family: 'Architects Daughter', cursive; line-height: 1.5; }
+    .bio-title { display: block; font-weight: bold; margin-bottom: 8px; }
+    .bio-desc { display: block; }
+
+    .type-grid { background-image: radial-gradient(#dcdcdc 1px, transparent 1px); background-size: 20px 20px; }
+    .type-lined { background-image: linear-gradient(#dcdcdc 1px, transparent 1px); background-size: 100% 30px; }
+  </style>
+</head>
+<body>
+  <header class="fixed-profile">
+    <img id="profileImg" src="" alt="Jade Baek Profile Image" loading="lazy" decoding="async" />
+    <h1 id="profileName">Jade Baek</h1>
+    <div class="bio-container">
+        <span class="bio-title">Full-stack Designer & Builder</span>
+        <span class="bio-desc">Crafting brand identities, UI/UX, and motion graphics.<br>I use vibe coding to bring my imagination to life.</span>
+    </div>
+    <nav class="post-nav" id="postNav" aria-label="Post Navigation"></nav>
+  </header>
+
+  <main class="slide-container" id="slideContainer" onclick="handleContainerClick(event)"></main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const USER = 'rawjade-lab', REPO = 'rawjade-lab/blog-site';
+    const container = document.getElementById('slideContainer'), nav = document.getElementById('postNav');
+    const types = ['type-grid', 'type-lined', 'type-blank'];
+    let allIssues = [];
+
+    // Front Matter 파서 함수
+    function parseFrontMatter(content) {
+      const frontMatterRegex = /^---\s*([\s\S]*?)\s*---([\s\S]*)$/;
+      const match = content.match(frontMatterRegex);
+      if (!match) return { metadata: {}, body: content };
+
+      const yamlBlock = match[1];
+      const body = match[2].trim();
+      const metadata = {};
+
+      yamlBlock.split('\n').forEach(line => {
+        const colonIndex = line.indexOf(':');
+        if (colonIndex !== -1) {
+          const key = line.slice(0, colonIndex).trim();
+          let value = line.slice(colonIndex + 1).trim();
+          if (value.startsWith('[') && value.endsWith(']')) {
+            value = value.slice(1, -1).split(',').map(v => v.trim().replace(/^['"]|['"]$/g, ''));
+          } else {
+            value = value.replace(/^['"]|['"]$/g, '');
+          }
+          metadata[key] = value;
+        }
+      });
+
+      return { metadata, body };
+    }
+
+    async function loadData() {
+      try {
+        const userRes = await fetch(`https://api.github.com/users/${USER}`);
+        const userData = await userRes.json();
+        document.getElementById('profileImg').src = userData.avatar_url;
+        
+        const issuesRes = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open`);
+        allIssues = await issuesRes.json();
+        allIssues.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        // Draft 필터링 적용 (front matter에 draft: true인 경우 제외)
+        allIssues = allIssues.filter(issue => {
+          const { metadata } = parseFrontMatter(issue.body || '');
+          return metadata.draft !== 'true' && metadata.draft !== true;
+        });
+
+        renderNav();
+        renderPosts();
+        if (allIssues.length > 0) {
+          updateSEO(allIssues[0]);
+        }
+      } catch (e) {
+        console.error("Data load failed", e);
+      }
+    }
+
+    function updateSEO(issue) {
+      const { metadata, body } = parseFrontMatter(issue.body || '');
+      const title = metadata.title || issue.title;
+      const description = metadata.description || body.replace(/[#*`_-]/g, '').slice(0, 150) + '...';
+      const currentUrl = window.location.href.split('#')[0];
+      const coverImage = metadata.cover || '';
+
+      // 동적 메타 업데이트
+      document.getElementById('metaDescription').setAttribute('content', description);
+      document.getElementById('canonicalUrl').setAttribute('href', currentUrl + (metadata.slug ? '#' + metadata.slug : ''));
+      
+      document.getElementById('ogTitle').setAttribute('content', title);
+      document.getElementById('ogDescription').setAttribute('content', description);
+      document.getElementById('ogImage').setAttribute('content', coverImage);
+      document.getElementById('ogUrl').setAttribute('content', currentUrl);
+
+      document.getElementById('twitterTitle').setAttribute('content', title);
+      document.getElementById('twitterDescription').setAttribute('content', description);
+      document.getElementById('twitterImage').setAttribute('content', coverImage);
+
+      // JSON-LD 업데이트
+      const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": title,
+        "description": description,
+        "author": {
+          "@type": "Person",
+          "name": "Jade Baek"
+        },
+        "datePublished": issue.created_at
+      };
+      document.getElementById('jsonLdSchema').text = JSON.stringify(schemaData);
+    }
+
+    function renderNav() {
+      const categories = {};
+      const unclassified = [];
+      allIssues.forEach((issue, idx) => {
+        const label = issue.labels.length > 0 ? issue.labels[0].name : null;
+        if (label) {
+          if (!categories[label]) categories[label] = [];
+          categories[label].push({ title: issue.title, idx: idx });
+        } else {
+          unclassified.push({ title: issue.title, idx: idx });
+        }
+      });
+      
+      nav.innerHTML = '';
+      for (const cat in categories) {
+        nav.innerHTML += `<div class="accordion"><button class="accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">${cat}</button><div class="accordion-content">${categories[cat].map(item => `<a href="#" onclick="selectPost(${item.idx}); return false;">> ${item.title}</a>`).join('')}</div></div>`;
+      }
+      if (unclassified.length > 0) {
+        nav.innerHTML += `<div class="accordion-content" style="display:block">${unclassified.map(item => `<a href="#" onclick="selectPost(${item.idx}); return false;">> ${item.title}</a>`).join('')}</div>`;
+      }
+    }
+
+    function selectPost(idx) {
+      renderPosts(idx);
+      updateSEO(allIssues[idx]);
+    }
+
+    function renderPosts(startIdx = 0) {
+      container.innerHTML = '';
+      for (let i = 0; i < allIssues.length; i++) {
+        const issue = allIssues[(startIdx + i) % allIssues.length];
+        const { metadata, body } = parseFrontMatter(issue.body || '');
+        const postTitle = metadata.title || issue.title;
+
+        const page = document.createElement('article');
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        const rotation = Math.floor(Math.random() * 7) - 3;
+        
+        page.className = `memo-page ${randomType}`;
+        page.innerHTML = `
+          <header>
+            <h2 class="main-title" style="transform: rotate(${rotation}deg);">${postTitle}</h2>
+          </header>
+          <div class="post-content">${marked.parse(body)}</div>
+        `;
+        
+        // 이미지 최적화 (lazy loading, decoding async 추가)
+        page.querySelectorAll('img').forEach(img => {
+          img.setAttribute('loading', 'lazy');
+          img.setAttribute('decoding', 'async');
+        });
+
+        container.appendChild(page);
+      }
+    }
+
+    function handleContainerClick(e) {
+      if (window.innerWidth > 768) {
+        const mid = window.innerWidth / 2;
+        container.scrollBy({ left: (e.clientX < mid ? -500 : 500), behavior: 'smooth' });
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
