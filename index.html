@@ -3,7 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RawJadeLab :: Diary Log</title>
+  <title id="pageTitle">RawJadeLab :: Diary Log</title>
+  
+  <!-- SEO & Open Graph / Twitter Card Meta Tags -->
+  <meta id="metaDesc" name="description" content="RawJadeLab Diary Log - Crafting brand identities, UI/UX, and motion graphics." />
+  <link id="canonicalUrl" rel="canonical" href="" />
+  
+  <meta property="og:type" content="website" />
+  <meta id="ogTitle" property="og:title" content="RawJadeLab :: Diary Log" />
+  <meta id="ogDesc" property="og:description" content="RawJadeLab Diary Log - Crafting brand identities, UI/UX, and motion graphics." />
+  <meta id="ogImage" property="og:image" content="./image/background.jpg" />
+  <meta id="ogUrl" property="og:url" content="" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta id="twTitle" name="twitter:title" content="RawJadeLab :: Diary Log" />
+  <meta id="twDesc" name="twitter:description" content="RawJadeLab Diary Log - Crafting brand identities, UI/UX, and motion graphics." />
+  <meta id="twImage" name="twitter:image" content="./image/background.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./image/icon/default.png" />
+
+  <!-- Structured Data (JSON-LD BlogPosting Schema) -->
+  <script type="application/ld+json" id="jsonLdSchema">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "RawJadeLab :: Diary Log",
+      "url": ""
+    }
+  </script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Architects+Daughter&family=Paytone+One&family=Racing+Sans+One&family=Darker+Grotesque:wght@400;700&family=Poor+Story&display=swap');
 
@@ -64,16 +93,17 @@
   </style>
 </head>
 <body>
-  <div class="fixed-profile">
-    <img id="profileImg" src="" alt="Profile">
+  <header class="fixed-profile">
+    <img id="profileImg" src="" alt="Jade Baek Profile Picture" width="150" height="150" loading="lazy" decoding="async" />
     <h1 id="profileName">Jade Baek</h1>
     <div class="bio-container">
         <span class="bio-title">Full-stack Designer & Builder</span>
         <span class="bio-desc">Crafting brand identities, UI/UX, and motion graphics.<br>I use vibe coding to bring my imagination to life.</span>
     </div>
-    <div class="post-nav" id="postNav"></div>
-  </div>
-  <div class="slide-container" id="slideContainer" onclick="handleContainerClick(event)"></div>
+    <nav class="post-nav" id="postNav" aria-label="Blog Categories"></nav>
+  </header>
+  
+  <main class="slide-container" id="slideContainer" onclick="handleContainerClick(event)" aria-label="Diary Entries"></main>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
@@ -82,50 +112,169 @@
     const types = ['type-grid', 'type-lined', 'type-blank'];
     let allIssues = [];
 
+    // YAML Front Matter 파서 (화면 미출력 및 메타데이터 추출)
+    function parseFrontMatter(body) {
+      if (!body) return { metadata: {}, content: '' };
+      const match = body.match(/^---\s*([\s\S]*?)\s*---([\s\S]*)$/);
+      if (!match) return { metadata: {}, content: body.trim() };
+
+      const metaLines = match[1].split('\n');
+      const metadata = {};
+      let currentKey = null;
+
+      metaLines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        
+        if (trimmed.startsWith('-') && currentKey) {
+          if (!Array.isArray(metadata[currentKey])) metadata[currentKey] = [];
+          metadata[currentKey].push(trimmed.replace(/^-/, '').trim());
+        } else {
+          const parts = line.split(':');
+          if (parts.length >= 2) {
+            currentKey = parts[0].trim();
+            const val = parts.slice(1).join(':').trim();
+            if (val) {
+              metadata[currentKey] = val === 'true' ? true : (val === 'false' ? false : val);
+            } else {
+              metadata[currentKey] = [];
+            }
+          }
+        }
+      });
+
+      return { metadata, content: match[2].trim() };
+    }
+
     async function loadData() {
-      const userRes = await fetch(`https://api.github.com/users/${USER}`);
-      const userData = await userRes.json();
-      document.getElementById('profileImg').src = userData.avatar_url;
-      
-      allIssues = await (await fetch(`https://api.github.com/repos/${REPO}/issues?state=open`)).json();
-      allIssues.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      
-      renderNav();
-      renderPosts();
+      try {
+        const userRes = await fetch(`https://api.github.com/users/${USER}`);
+        const userData = await userRes.json();
+        document.getElementById('profileImg').src = userData.avatar_url;
+        
+        const issuesRes = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open`);
+        const rawIssues = await issuesRes.json();
+
+        // draft: true인 글 필터링 (선택사항 대응)
+        allIssues = rawIssues.filter(issue => {
+          const { metadata } = parseFrontMatter(issue.body);
+          return metadata.draft !== true;
+        });
+
+        allIssues.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        renderNav();
+        renderPosts();
+      } catch (e) {
+        console.error("Data load failed:", e);
+      }
     }
 
     function renderNav() {
       const categories = {};
       const unclassified = [];
+      
       allIssues.forEach((issue, idx) => {
+        const { metadata } = parseFrontMatter(issue.body);
+        // 기존 GitHub Labels 시스템을 카테고리로 사용
         const label = issue.labels.length > 0 ? issue.labels[0].name : null;
+
+        const displayTitle = metadata.title || issue.title;
+
         if (label) {
           if (!categories[label]) categories[label] = [];
-          categories[label].push({ title: issue.title, idx: idx });
+          categories[label].push({ title: displayTitle, idx: idx });
         } else {
-          unclassified.push({ title: issue.title, idx: idx });
+          unclassified.push({ title: displayTitle, idx: idx });
         }
       });
       
       nav.innerHTML = '';
       for (const cat in categories) {
-        nav.innerHTML += `<div class="accordion"><button class="accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">${cat}</button><div class="accordion-content">${categories[cat].map(item => `<a href="#" onclick="renderPosts(${item.idx})">> ${item.title}</a>`).join('')}</div></div>`;
+        nav.innerHTML += `<div class="accordion"><button class="accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">${cat}</button><div class="accordion-content">${categories[cat].map(item => `<a href="#" onclick="renderPosts(${item.idx}); return false;">> ${item.title}</a>`).join('')}</div></div>`;
       }
-      if (unclassified.length > 0) nav.innerHTML += `<div class="accordion-content" style="display:block">${unclassified.map(item => `<a href="#" onclick="renderPosts(${item.idx})">> ${item.title}</a>`).join('')}</div>`;
+      if (unclassified.length > 0) {
+        nav.innerHTML += `<div class="accordion-content" style="display:block">${unclassified.map(item => `<a href="#" onclick="renderPosts(${item.idx}); return false;">> ${item.title}</a>`).join('')}</div>`;
+      }
     }
 
     function renderPosts(startIdx = 0) {
       container.innerHTML = '';
+      
+      if (allIssues.length > 0) {
+        const currentIssue = allIssues[startIdx % allIssues.length];
+        updateSEO(currentIssue);
+      }
+
       for (let i = 0; i < allIssues.length; i++) {
         const issue = allIssues[(startIdx + i) % allIssues.length];
-        const page = document.createElement('div');
+        const { metadata, content } = parseFrontMatter(issue.body);
+        
+        const page = document.createElement('article');
         const randomType = types[Math.floor(Math.random() * types.length)];
-        const rotation = Math.floor(Math.random()*7)-3;
+        const rotation = Math.floor(Math.random() * 7) - 3;
         
         page.className = `memo-page ${randomType}`;
-        page.innerHTML = `<div><h2 class="main-title" style="transform: rotate(${rotation}deg);">${issue.title}</h2></div><div class="post-content">${marked.parse(issue.body)}</div>`;
+        
+        const displayTitle = metadata.title || issue.title;
+        let parsedHTML = marked.parse(content);
+        
+        // 이미지 최적화 (lazy loading 적용)
+        parsedHTML = parsedHTML.replace(/<img /g, '<img loading="lazy" decoding="async" ');
+
+        page.innerHTML = `
+          <div><h2 class="main-title" style="transform: rotate(${rotation}deg);">${displayTitle}</h2></div>
+          <div class="post-content">${parsedHTML}</div>
+        `;
         container.appendChild(page);
       }
+    }
+
+    function updateSEO(issue) {
+      const { metadata, content } = parseFrontMatter(issue.body);
+      const title = metadata.title || issue.title;
+      
+      // 본문 첫 문단 또는 메타데이터 기반 description 자동 생성
+      const cleanContent = content.replace(/<[^>]*>?/gm, '');
+      const description = metadata.description || (cleanContent.length > 150 ? cleanContent.substring(0, 150) + '...' : cleanContent);
+      
+      // slug가 있는 경우 반영, 없으면 기본 URL 유지
+      let currentUrl = window.location.href.split('#')[0];
+      if (metadata.slug) {
+        currentUrl = currentUrl.endsWith('/') ? currentUrl + metadata.slug : currentUrl + '/' + metadata.slug;
+      }
+      
+      const coverImage = metadata.cover || document.getElementById('profileImg').src;
+
+      // 동적 SEO 메타 갱신
+      document.getElementById('pageTitle').innerText = `${title} :: RawJadeLab Diary Log`;
+      document.getElementById('metaDesc').setAttribute('content', description);
+      document.getElementById('canonicalUrl').setAttribute('href', currentUrl);
+
+      document.getElementById('ogTitle').setAttribute('content', title);
+      document.getElementById('ogDesc').setAttribute('content', description);
+      document.getElementById('ogImage').setAttribute('content', coverImage);
+      document.getElementById('ogUrl').setAttribute('content', currentUrl);
+
+      document.getElementById('twTitle').setAttribute('content', title);
+      document.getElementById('twDesc').setAttribute('content', description);
+      document.getElementById('twImage').setAttribute('content', coverImage);
+
+      // JSON-LD (BlogPosting Schema) 갱신
+      const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": title,
+        "description": description,
+        "image": coverImage,
+        "datePublished": issue.created_at,
+        "author": {
+          "@type": "Person",
+          "name": "Jade Baek"
+        },
+        "url": currentUrl
+      };
+      document.getElementById('jsonLdSchema').text = JSON.stringify(schemaData);
     }
 
     function handleContainerClick(e) {
@@ -134,6 +283,7 @@
         container.scrollBy({ left: (e.clientX < mid ? -500 : 500), behavior: 'smooth' });
       }
     }
+
     loadData();
   </script>
 </body>

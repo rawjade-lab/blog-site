@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rawjade-lab.github.io/blog-site/sitemap.xml
